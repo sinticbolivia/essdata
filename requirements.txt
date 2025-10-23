@@ -1,0 +1,12 @@
+flask
+Flask-SQLAlchemy
+Flask-Migrate
+pymysql
+cryptography
+requests
+pandas
+xlrd
+openpyxl
+lxml
+pdfquery
+pypdf

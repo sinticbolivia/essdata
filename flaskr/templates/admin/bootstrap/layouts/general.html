@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  {% include 'admin/bootstrap/partials/head.html' %}
+</head>
+<body id="top-header">
+{% include 'admin/bootstrap/partials/header.html' %}
+<div id="main-conttent">
+	{% block content %}
+	{% endblock %}
+</div>
+{% include 'admin/bootstrap/partials/footer.html' %}
+<script src="{{ url_for('common.js_config') }}"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+{% block footer_vuejs %}{% endblock %}
+{% block footer_js %}{% endblock %}
+</body>
+</html>
+   

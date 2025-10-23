@@ -1,0 +1,103 @@
+{% extends 'admin/bootstrap/layouts/general.html' %}
+{% block content %}
+<!--
+<h2>Lista de Proyectos</h2>
+<div class="mb-1">
+	<a href="{{ url_for('panel.obtener_proyectos') }}" class="btn btn-primary btn-circular">Extraer</a>
+</div>
+
+<div class="mb-1">
+	<form action="{{ url_for('panel.proyectos') }}" method="get">
+		<input type="text" name="keyword" value="{{ keyword }}" class="form-control" placeholder="Buscar..." />
+	</form>
+</div>
+-->
+<div id="vue-app">
+	<div class="table-responsive mt-4">
+		<table class="table table-sm table-striped shadow border">
+		<thead>
+		<tr>
+			<th class="text-center">Nro.</th>
+			<th class="text-center">Proyecto</th>
+			<th class="text-center">Empresa</th>
+			<th class="d-none">Tipo</th>
+			<th class="text-center">ECX</th>
+			<th class="text-center">FCX</th>
+			<th class="text-center">MW</th>
+			<th class="text-center">Region</th>
+			<th class="d-none">Comuna</th>
+			<th>RCA</th>
+			<th>FRCA</th>
+			<th class="text-center">Accion</th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for item in pagination.items %}
+		<tr>
+			<td>{{ item.id }}</td>
+			<td>{{ item.nombre }}</td>
+			<td>{{ item.empresa }}</td>
+			<td class="d-none">{{ item.tipo }}</td>
+			<td>{{ item.estado_solicitud }}</td>
+			<td>{{ item.fecha_estimada_conexion.strftime('%Y-%m-%d') if item.fecha_estimada_conexion is not none else '' }}</td>
+			<td>{{ item.capacidad.replace('"', '') if item.capacidad is not none else '' }}</td>
+			<td>{{ item.region }}</td>
+			<td class="d-none">{{ item.comuna }}</td>
+			<td>{{ item.rca }}</td>
+			<td>{{ item.frca.strftime('%Y-%m-%d') if item.frca is not none else '' }}</td>
+			<td>
+				<button type="button" class="btn btn-primary btn-sm mb-1 btn-show-info" data-info="reps"
+					data-route="{{ url_for('panel.representantes', id=item.id) }}"
+					data-title="{{ item.nombre }}"
+					v-on:click="showInfo({{ item.id }}, 'reps', '{{ item.nombre }}')">
+					Ver representantes
+				</button>
+				<button type="button" class="btn btn-info btn-sm mb-1 btn-show-info" data-info="coords"
+					data-route="{{ url_for('panel.coordinadores', id=item.id) }}"
+					data-title="{{ item.nombre }}"
+					v-on:click="showInfo({{ item.id }}, 'coords', '{{ item.nombre }}')">
+					Ver coordinadores
+				</button>
+				<button type="button" class="btn btn-sm btn-warning" v-on:click="showMatches({{ item.id }})">Asignar</button>
+			</td>
+		</tr>
+		{% endfor %}
+		</tbody>
+		</table>
+	</div>
+	<div class="page-items">
+		{{ pagination.first }} - {{ pagination.last }} of {{ pagination.total }}
+	</div>
+	<div class="pagination text-center">
+		{% for page in pagination.iter_pages() %}
+			{% if page %}
+				{% if page != pagination.page %}
+				<a href="{{ url_for(endpoint, page=page) }}" class="btn btn-outline-primary me-1">{{ page }}</a>
+				{% else %}
+				<strong class="btn btn-primary me-1">{{ page }}</strong>
+				{% endif %}
+			{% else %}
+			<span class="ellipsis">...</span>
+			{% endif %}
+		{% endfor %}
+	</div>
+	<modal v-bind:title="title_items" ref="modal_items" class="fade">
+		<div class="list-group">
+			<div class="list-group-item" v-for="(item, ii) in items">
+				<div>{{ '{{item.nombre}}' }}</div>
+				<div>{{ '{{item.email}}' }}</div>
+				<div>{{ '{{ item.telefono }}' }}</div>
+			</div>
+		</div>
+	</modal>
+	<modal title="Lista de Coincidencias" ref="modal_matches" class="fade modal-lg">
+		<matches v-bind:matches="matches" v-on:assign="onAssign" />
+	</modal>
+</div>
+{% endblock %}
+{% block footer_js %}
+
+{% endblock %}
+{% block footer_vuejs %}
+<script src="{{ 'js/proyectos.js' | asset_url }}" type="module" defer></script>
+{% endblock %}

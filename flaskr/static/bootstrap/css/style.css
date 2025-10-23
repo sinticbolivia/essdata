@@ -1,0 +1,6 @@
+#header{background:#282A35;}
+#header #status-bar{background:#0DD999;}
+#form-header-search{text-align:right;}
+#form-header-search input{border-radius:50px;width: 250px;padding:5px 8px;background:#888;border:0;color:#000;}
+#form-header-search input:focus{border:0;}
+#form-header-search input::placeholder{color:#000;}
