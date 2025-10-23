@@ -1,0 +1,19 @@
+[Unit]
+Description=ESSDATA Flask Application
+After=network.target
+
+[Service]
+Environment="TZ=America/La_Paz"
+WorkingDirectory=/home/essdata/services/essdata
+ExecStart=/home/essdata/services/essdata/venv/bin/flask --app  /home/essdata/services/essdata/app.py run
+Restart=on-failure 
+User=essdata
+#StandardOutput=syslog
+#StandardError=syslog
+StandardOutput=append:/home/essdata/services/essdata/log.log
+StandardError=append:/home/essdata/services/essdata/error.log
+SyslogIdentifier=ESSDATA
+
+[Install]
+WantedBy=multi-user.target
+
