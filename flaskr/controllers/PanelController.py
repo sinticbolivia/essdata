@@ -132,8 +132,10 @@ def obtener_proyectos():
 			prj.region = proyecto.get('region')
 			prj.comuna = proyecto.get('comuna')
 			prj.estado_solicitud = proyecto.get('estado_solicitud')
-			prj.fecha_recepcion = datetime.fromisoformat(proyecto.get('create_date').replace('Z', '')) if proyecto.get('create_date') != '0000-00-00' else None 
-			prj.fecha_estimada_conexion = datetime.fromisoformat(proyecto.get('fecha_estimada_conexion').replace('Z', '')) if proyecto.get('fecha_estimada_conexion') != '0000-00-00' else None
+			_create_date = proyecto.get('create_date')
+			_fecha_estimada_conexion = proyecto.get('fecha_estimada_conexion', '')
+			prj.fecha_recepcion = datetime.fromisoformat(_create_date.replace('Z', '')) if _create_date is not None and _create_date != '0000-00-00' else None 
+			prj.fecha_estimada_conexion = datetime.fromisoformat(_fecha_estimada_conexion.replace('Z', '')) if _fecha_estimada_conexion is not None and _fecha_estimada_conexion != '0000-00-00' else None
 			prj.capacidad = proyecto.get('potencia_nominal', '')
 			
 			files = process.get_record_files(proyecto)

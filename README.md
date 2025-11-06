@@ -9,6 +9,7 @@ python3.12 -m venv venv
 
 ```
 pip install -r requirements.txt
+pip install gunicorn
 ```
 
 # Initialize Database
@@ -21,6 +22,12 @@ flask init-db
 
 ```
 flask --app app.py run
+```
+
+# Run with GUnicorn
+
+```
+gunicorn -w 4 app:app -b 0.0.0.0:5000 -t 0
 ```
 
 # CREATE SYSTEMD SERVICE
