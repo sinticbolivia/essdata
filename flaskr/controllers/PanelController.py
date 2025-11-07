@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 from flask import (
     current_app, Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
 )
@@ -93,11 +94,13 @@ def obtener_proyectos():
 		
 		external_id = proyecto.get('id', 0)
 		prj = Project.query.filter_by(external_id=external_id).first()
+		_create_date = proyecto.get('create_date')
+		_fecha_estimada_conexion = proyecto.get('fecha_estimada_conexion', '')
 		if prj is not None:
 			print('found', external_id)
 			prj.estado_solicitud = proyecto.get('estado_solicitud')
-			prj.fecha_recepcion = datetime.fromisoformat(proyecto.get('create_date').replace('Z', '')) if proyecto.get('create_date') != '0000-00-00' else None 
-			prj.fecha_estimada_conexion = datetime.fromisoformat(proyecto.get('fecha_estimada_conexion').replace('Z', '')) if proyecto.get('fecha_estimada_conexion') != '0000-00-00' else None
+			prj.fecha_recepcion = datetime.fromisoformat(_create_date.replace('Z', '')) if _create_date is not None and _create_date != '0000-00-00' else None 
+			prj.fecha_estimada_conexion = datetime.fromisoformat(_fecha_estimada_conexion.replace('Z', '')) if _fecha_estimada_conexion is not None and _fecha_estimada_conexion != '0000-00-00' else None
 			prj.capacidad = proyecto.get('potencia_nominal', '')
 			dbh.session.commit()
 			
@@ -132,8 +135,6 @@ def obtener_proyectos():
 			prj.region = proyecto.get('region')
 			prj.comuna = proyecto.get('comuna')
 			prj.estado_solicitud = proyecto.get('estado_solicitud')
-			_create_date = proyecto.get('create_date')
-			_fecha_estimada_conexion = proyecto.get('fecha_estimada_conexion', '')
 			prj.fecha_recepcion = datetime.fromisoformat(_create_date.replace('Z', '')) if _create_date is not None and _create_date != '0000-00-00' else None 
 			prj.fecha_estimada_conexion = datetime.fromisoformat(_fecha_estimada_conexion.replace('Z', '')) if _fecha_estimada_conexion is not None and _fecha_estimada_conexion != '0000-00-00' else None
 			prj.capacidad = proyecto.get('potencia_nominal', '')
@@ -143,9 +144,13 @@ def obtener_proyectos():
 			for _file_ in files:
 				if 'formulario' not in _file_.get('nombre').lower():
 					continue
-				people_data = process.find_file_data(_file_)
-				if people_data is not None:
-					break
+				try:
+					people_data = process.find_file_data(_file_)
+					if people_data is not None:
+						break
+				except e as Exception:
+					print('ERROR', e)
+					print('ERROR', e, file=sys.stderr)
 			
 			if people_data is not None:
 				print(people_data[0])
